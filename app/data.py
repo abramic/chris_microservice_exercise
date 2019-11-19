@@ -146,13 +146,12 @@ def add_new_user(user_name):
         raise e
 
 
-# @decorators.print_func_name()
-# def locations_handle_patch_with_id(user_id, body):
-#     try:
-#         user_name = 
-#         db = orm.User(user_name)
-#         response = db.insert_new_user()
-#         return response
-#     except Exception as e:
-#         print(e)
-#         raise e
+@decorators.print_func_name()
+def add_location(user_id, body):
+    try:
+        db = orm.Locations()
+        response = db.insert_new_location(user_id)
+        return response
+    except Exception as e:
+        print(e)
+        raise e

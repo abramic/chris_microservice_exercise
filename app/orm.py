@@ -2,6 +2,7 @@ import os
 import requests
 from json import dumps
 from pymongo import MongoClient
+from bson.objectid import ObjectId
 
 import decorators
 import errors
@@ -12,12 +13,12 @@ class Database(object):
         self.db = self.client['yelp_api_backend_db']
         self.collection = self.db['restaurant_info']
 
-    def find_one(self, user_id):
-        try:
-            result = self.collection.find_one({'user_id': str(user_id)})
-            return result
-        except Exception as e:
-            raise e
+    # def find_one(self, user_id):
+    #     try:
+    #         result = self.collection.find_one({'user_id': str(user_id)})
+    #         return result
+    #     except Exception as e:
+    #         raise e
 
 class User(Database):
     def __init__(self, user_name):
@@ -68,9 +69,8 @@ class Restaurants(Database):
 
 
 class Locations(Database):
-    def __init__(self, user_id):
+    def __init__(self):
         super().__init__()
-        self.user_id = user_id
         self.location_structure = {
             "location_name": None,
             "latitude": None,
@@ -82,16 +82,21 @@ class Locations(Database):
     # }
 
 
-    # @decorators.print_func_name()   
-    # def insert_new_location(self, user_name):
-    #     # for now, just use default location structure
-    #     result = self.collection.user_id.insert_one(user_name)
-    #     try: 
-            
-    #     pass
+    @decorators.print_func_name()   
+    def insert_new_location(self, user_id):
+        # for now, just use default location structure
+        print(user_id)
+        try: 
+            result = self.collection.find_one({
+                    '_id': ObjectId(user_id),
+                })
+            print(result)
 
-    # def insert_for_existing_user():
-    #     pass
+        except Exception as e:
+            raise e
+
+    def insert_for_existing_user():
+        pass
     
 
 

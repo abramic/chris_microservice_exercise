@@ -46,8 +46,9 @@ def handle_locations():
     try:
         user_id = request.args.get('user_id')
         if(request.method == 'PATCH'):
-            body = request.get_json()
-            response = data.locations_handle_patch_with_id(user_id, body)
+            # body = request.get_json()
+            body = {}
+            response = data.add_location(user_id, body)
             print(response)
             return make_response(response, 200)
         else:
