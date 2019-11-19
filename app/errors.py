@@ -1,7 +1,7 @@
 class BackendDefinedErrors(Exception):
      def __init__(self):   
         self.error_code = None
-        self.message = None
+        self.message = 'Default Backend Response'
 
 class RestaurantGetRequestInsertion(BackendDefinedErrors):
     def __init__(self):
@@ -21,6 +21,11 @@ class MissingUserIdInQueryString(BackendDefinedErrors):
         self.error_code = 700
         self.message = 'Please provide a user id' 
 
+class DefaultBackendResponse(BackendDefinedErrors):
+    def __init__(self, e):
+        super().__init__()
+        self.error_code = 500
+        self.message = e   
 
 class YelpConcurrencyError():
     pass

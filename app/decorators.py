@@ -25,17 +25,19 @@ def check_for_user_id():
     def decorator(f):
         @wraps(f)
         def decorated(*args, **kwargs):
+            default_response = helpers.format_error_message(errors.BackendDefinedErrors())
+            result = make_response(default_response, 500)
             try:
                 if 'user_id' not in request.args.keys():
-                    raise errors.MissingUserIdInQueryString()
-                result = f(*args, **kwargs)
-                return result
-            except Exception as e:
-                if type(e).__name__ in ['BackendDefinedErrors']:
-                    message = helpers.format_error_message(e)
-                    return make_response(message, 400, [])
+                    error_response = helpers.format_error_message(errors.MissingUserIdInQueryString())
+                    result = make_response(error_response, 400)
                 else:
-                    return make_response({'message': 'Unknown server error'}, 500, [])
+                    result = f(*args, **kwargs)
+            except Exception as e:
+                    error_message = helpers.format_error_message(errors.DefaultBackendResponse(e))
+                    result = make_response(error_response, 500)
+            finally:
+                return result
         return decorated
     return decorator
 

@@ -38,6 +38,16 @@ def handle_yelp_data():
         # print(e)
         raise e
 
+@app.route('/locations')
+@decorators.print_func_name()
+@decorators.check_for_user_id()
+@decorators.handle_errors()
+def handle_locations():
+    try:
+        return make_response({'message': 'Hello World from Handle Locations!'}, 200)
+    except Exception as e:
+        raise e
+
 app.run(port=int('5001'), debug=True)
 # app.run(host='0.0.0.0', port=int('5001'), debug=True)
 

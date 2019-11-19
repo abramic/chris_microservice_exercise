@@ -38,6 +38,9 @@ class Restaurants(Database):
         except Exception as e:
             raise e
 
+    def add_location(self, user_id):
+        pass
+
 
 
 class Yelp(object):
