@@ -44,6 +44,9 @@ def handle_yelp_data():
 @decorators.handle_errors()
 def handle_locations():
     try:
+        # Handle get
+        # Handle patch with id
+        # Hanlde path without id
         return make_response({'message': 'Hello World from Handle Locations!'}, 200)
     except Exception as e:
         raise e

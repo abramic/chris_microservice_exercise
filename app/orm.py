@@ -10,11 +10,19 @@ class Database(object):
     def __init__(self):
         self.client = MongoClient(os.getenv('MONGO_ATLAS_CONNECTION_STRING'))
         self.db = self.client['yelp_api_backend_db']
+        self.collection = self.db['restaurant_info']
+
+    def find_one(self, user_id):
+        try:
+            result = self.collection.find_one({'user_id': str(user_id)})
+            return result
+        except Exception as e:
+            raise e
+
 
 class Restaurants(Database):
     def __init__(self):
         super().__init__()
-        self.collection = self.db['restaurant_info']
 
     @decorators.print_func_name()
     def insert_new_restaurants_for_user(self, data):
@@ -31,15 +39,10 @@ class Restaurants(Database):
         except Exception as e:
             raise e
 
-    def find_one(self, user_id):
-        try:
-            result = self.collection.find_one({'user_id': str(user_id)})
-            return result
-        except Exception as e:
-            raise e
 
-    def add_location(self, user_id):
-        pass
+class Locations(Database):
+    def __init__(self):
+        super().__init__()
 
 
 

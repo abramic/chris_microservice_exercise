@@ -126,10 +126,13 @@ def retrieve_for_multiple_cities(request):
         }
 
         db = orm.Restaurants()
-        print(type(results))
+        # print(type(results))
         response = db.insert_new_restaurants_for_user(results)
         return response
 
     except Exception as e:
         print(e)
         raise e
+
+def locations_handle_patch_with_id(user_id, body):
+    pass
