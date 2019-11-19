@@ -32,9 +32,9 @@ Response Body:
 
 #### Request
 ```
-Required request parameters
-  user_id
-  location_id
+Request parameters
+  user_id (required)
+  location_id (optional)
   
   If location_id is present in the query string, items passed back in the payload get overwritten (items not passed back will   remain unchanged).  
 
