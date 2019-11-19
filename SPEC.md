@@ -97,3 +97,15 @@ Required request parameters
   ```
 
 Note: If values not yet in database, this endpoint will pull for all locations entered for user.  If no locations have been entered, user will be prompted to add at least a single location prior to doing a data pull
+
+## Error Handling
+
+If an error arising from the client interaction with the API is encountered, the response for all endpoints will be consistent:
+
+```
+Status Code: 400
+{
+  message: 'Please supply a user_id'
+  error_code: 613
+}
+```
