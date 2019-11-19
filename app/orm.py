@@ -105,9 +105,26 @@ class Locations(Database):
         except Exception as e:
             raise errors.DatabaseLocationInsertion(e)
 
-    def insert_for_existing_user():
-        pass
-    
+    def update_location(self, user_id, location_id, body):
+        try:
+            print('body is', body)
+            base_set_path = f"locations.{location_id}"
+            set_object = {}
+            for key in body.keys():
+                set_object[f"{base_set_path}.{key}"] = body.get(key)
+            print(set_object)
+            response = self.collection.update({
+                '_id': ObjectId(user_id),
+                },
+                {
+                    "$set": set_object
+                }
+            )
+            return {
+                'id': location_id,
+            }           
+        except Exception as e:
+            raise e
 
 
 class Yelp(object):

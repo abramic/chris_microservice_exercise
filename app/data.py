@@ -155,3 +155,14 @@ def add_location(user_id, body):
     except Exception as e:
         print(e)
         raise e
+
+
+@decorators.print_func_name()
+def update_location(user_id, location_id, body):
+    try:
+        db = orm.Locations()
+        response = db.update_location(user_id, location_id, body)
+        return response
+    except Exception as e:
+        print(e)
+        raise e

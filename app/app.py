@@ -46,11 +46,18 @@ def handle_yelp_data():
 def handle_locations():
     try:
         user_id = request.args.get('user_id')
+        # If there's no location id
         if(request.method == 'PATCH'):
-            # new location
             body = request.get_json()
-            response = data.add_location(user_id, body)
-            return make_response(response, 201)
+            if(request.args.get('location_id') == None):
+                response = data.add_location(user_id, body)
+                return make_response(response, 201)
+            else:
+                location_id = request.args.get('location_id')
+                response = data.update_location(user_id, location_id, body)
+                return make_response(response, 204)
+        # If there is a location id
+
         else:
             raise Exception()
     except Exception as e:
