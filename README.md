@@ -2,15 +2,33 @@
 
 ## ENDPOINT: /locations
 
-### GET all locations
+### GET
 
+#### Request
 ```
 Required request parameters
   user_id
 ```
+#### Response
+```
+Status Code: 200
+Response Body: 
 
-### PATCH location
+[
+   {
+     "id": "awelkrerk3434k3q43ak4343a4kq",
+     "location": "New York",
+     "latitude": 40.785091,
+     "longitude": -73.968285
+   }
+  ...as many locations as exist for that user
+]
+```
 
+
+### PATCH
+
+#### Request
 ```
 Required request parameters
   user_id
@@ -18,7 +36,7 @@ Required request parameters
   
   If location_id is present in the query string, items passed back in the payload get overwritten (items not passed back will   remain unchanged).  
 
-  Otherwise, location is added to user's locations object in the database
+  Otherwise, location is added to user's 'locations' information in the database
 
 Payload:  
 
@@ -30,6 +48,17 @@ Payload:
  
  If location_id is not present in the query string, all props must be included
 ```
+#### Response
+
+```
+Status Code: 201 (if newly created) 204 (if updated)
+Response Body:
+
+{
+  "id": "2k323kekf3k3q43k3qk3etk43q43k"
+}
+
+```
  
 ## ENDPOINT: /restaurants
 
@@ -37,9 +66,9 @@ Payload:
 Required request parameters
   user_id
 ```
-### GET all businesses
+### GET
 
-#### Request parameters / payload
+#### Request
 
   ```
   Optional request parameters
@@ -49,9 +78,10 @@ Required request parameters
   Payload: {}
   ```
 
-#### Response Object:
+#### Response:
 
   ```
+  Status Code: 200
   {
      businesses: [
         {
