@@ -38,6 +38,7 @@ def handle_yelp_data():
         # print(e)
         raise e
 
+
 @app.route('/locations', methods = ['GET', 'PATCH'])
 @decorators.print_func_name()
 @decorators.check_for_user_id()
@@ -46,11 +47,10 @@ def handle_locations():
     try:
         user_id = request.args.get('user_id')
         if(request.method == 'PATCH'):
-            # body = request.get_json()
-            body = {}
+            # new location
+            body = request.get_json()
             response = data.add_location(user_id, body)
-            print(response)
-            return make_response(response, 200)
+            return make_response(response, 201)
         else:
             raise Exception()
     except Exception as e:

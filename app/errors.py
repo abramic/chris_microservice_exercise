@@ -16,10 +16,10 @@ class DatabaseUserInsertion(BackendDefinedErrors):
         self.message = 'There was an error the user information into the database'
 
 class DatabaseLocationInsertion(BackendDefinedErrors):
-    def __init__(self):
+    def __init__(self, message):
         super().__init__()
         self.error_code = 603
-        self.message = 'There was an error adding information for the location into the database'
+        self.message = message
 
 class RestaurantDataForUserNotFound(BackendDefinedErrors):
     def __init__(self):

@@ -83,17 +83,27 @@ class Locations(Database):
 
 
     @decorators.print_func_name()   
-    def insert_new_location(self, user_id):
+    def insert_new_location(self, user_id, body):
         # for now, just use default location structure
-        print(user_id)
+        print(user_id, body)
         try: 
-            result = self.collection.find_one({
-                    '_id': ObjectId(user_id),
-                })
-            print(result)
-
+            record_object_id = ObjectId()
+            response = self.collection.update({
+                '_id': ObjectId(user_id),
+                },
+                {
+                    "$set": {
+                        f"locations.{record_object_id}": body
+                    }
+                }
+            )
+            print(response)
+            # TO DO: Add additional validation and error handling on response body
+            return {
+                'id': str(record_object_id)
+            }
         except Exception as e:
-            raise e
+            raise errors.DatabaseLocationInsertion(e)
 
     def insert_for_existing_user():
         pass

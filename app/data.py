@@ -150,7 +150,7 @@ def add_new_user(user_name):
 def add_location(user_id, body):
     try:
         db = orm.Locations()
-        response = db.insert_new_location(user_id)
+        response = db.insert_new_location(user_id, body)
         return response
     except Exception as e:
         print(e)
