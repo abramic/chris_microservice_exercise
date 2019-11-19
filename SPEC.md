@@ -1,6 +1,6 @@
 # chris_microservice_exercise
 
-Sankaet, I've included many of your suggestions from Friday RE: locations and will also add paginated GET requests in for restaurants
+Sankaet, I've included many of your suggestions from Friday RE: locations and will also make my already existing GET request for restaurants more expressive, with paginated restaurant results getting returned. 
 
 ## ENDPOINT: /locations
 
