@@ -6,42 +6,14 @@ from pymongo import MongoClient
 import decorators
 import errors
 
-# class Database(object):
-#     def __init__(self, host=os.getenv('DB_MICROSERVICE_URL')):
-#         self.host = host
-
-#     @decorators.print_func_name()
-#     def post(self, data):
-#         try:
-#             response = requests.patch(
-#                 f"{self.host}/addOrUpdateRestaurantSearch",
-#                 data=dumps(data),
-#                 headers={
-#                     'Content-Type': 'application/json',
-#                 }
-#             )
-#             return response
-#         except Exception as e:
-#             raise e
-
-#     @decorators.print_func_name()
-#     def ping(self, user_id):
-#         try:
-#             response = requests.get(
-#                 f"{os.getenv('DB_MICROSERVICE_URL')}/doesUserExist?user_id={user_id}",
-#             )
-#             return response
-#         except Exception as e:
-#             raise e
-
-class Restaurants(object):
-    # def __init__(self, db):
-    #     super().__init__(db)
-    #     # self.collection = self.db['restaurant_info']
-    #     self.db = db
+class Database(object):
     def __init__(self):
         self.client = MongoClient(os.getenv('MONGO_ATLAS_CONNECTION_STRING'))
         self.db = self.client['yelp_api_backend_db']
+
+class Restaurants(Database):
+    def __init__(self):
+        super().__init__()
         self.collection = self.db['restaurant_info']
 
     @decorators.print_func_name()
