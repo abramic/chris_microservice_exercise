@@ -166,3 +166,13 @@ def update_location(user_id, location_id, body):
     except Exception as e:
         print(e)
         raise e
+
+
+@decorators.print_func_name()
+def get_all_locations(user_id):
+    try:
+        db = orm.Locations()
+        response = db.retrieve_all_locations(user_id)
+        return response
+    except:
+        pass

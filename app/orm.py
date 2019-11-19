@@ -126,6 +126,20 @@ class Locations(Database):
         except Exception as e:
             raise e
 
+    def retrieve_all_locations(self, user_id):
+        try:
+            result = self.collection.find_one({
+                    '_id': ObjectId(user_id)
+                },{
+                  'locations': 1
+                }
+            )
+            print('TYPE', type(result))
+            locations = result.get('locations')
+            return locations
+        except Exception as e:
+            raise e
+
 
 class Yelp(object):
     def __init__(self, token=os.getenv('YELP_BEARER_TOKEN')):
