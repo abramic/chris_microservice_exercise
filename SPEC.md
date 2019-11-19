@@ -96,7 +96,7 @@ Required request parameters
   }
   ```
 
-Note: If values not yet in database, this endpoint will pull for all locations entered for user.  If no locations have been entered, user will be prompted to add at least a single location prior to doing a data pull
+Note: If restaurant values not yet in database, this endpoint will pull for all locations entered by user.  If no locations have been entered, user will be prompted to add at least a single location prior to doing a data pull
 
 ## Error Handling
 
