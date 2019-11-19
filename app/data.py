@@ -134,5 +134,13 @@ def retrieve_for_multiple_cities(request):
         print(e)
         raise e
 
+
+@decorators.print_func_name()
 def locations_handle_patch_with_id(user_id, body):
-    pass
+    try:
+        db = orm.Locations(user_id)
+        response = db.insert_location_for_new_user()
+        return response
+    except Exception as e:
+        print(e)
+        raise e

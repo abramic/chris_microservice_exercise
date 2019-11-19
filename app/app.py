@@ -38,17 +38,22 @@ def handle_yelp_data():
         # print(e)
         raise e
 
-@app.route('/locations')
+@app.route('/locations', methods = ['GET', 'PATCH'])
 @decorators.print_func_name()
 @decorators.check_for_user_id()
 @decorators.handle_errors()
 def handle_locations():
     try:
-        # Handle get
-        # Handle patch with id
-        # Hanlde path without id
-        return make_response({'message': 'Hello World from Handle Locations!'}, 200)
+        user_id = request.args.get('user_id')
+        if(request.method == 'PATCH'):
+            body = request.get_json()
+            response = data.locations_handle_patch_with_id(user_id, body)
+            print(response)
+            return make_response(response, 200)
+        else:
+            raise Exception()
     except Exception as e:
+        print(e)
         raise e
 
 app.run(port=int('5001'), debug=True)

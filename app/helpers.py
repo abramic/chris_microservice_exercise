@@ -16,8 +16,6 @@ def modify_businesses(businesses_for_city, businesses_for_all_cities, city_name)
         raise e
 
 
-
-
 def format_error_message(error):
     try:
         print(error.error_code)
@@ -32,3 +30,6 @@ def format_error_message(error):
             'error_code': 500,
             'message': 'Format error message'
         }
+
+def validate_location_name(body):
+    pass

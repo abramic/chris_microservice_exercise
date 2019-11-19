@@ -9,6 +9,12 @@ class RestaurantGetRequestInsertion(BackendDefinedErrors):
         self.error_code = 600
         self.message = 'There was an error inserting into the database'
 
+class DatabaseUserInsertion(BackendDefinedErrors):
+    def __init__(self):
+        super().__init__()
+        self.error_code = 602
+        self.message = 'There was an error the user information into the database'
+
 class RestaurantDataForUserNotFound(BackendDefinedErrors):
     def __init__(self):
         super().__init__()

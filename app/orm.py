@@ -41,9 +41,46 @@ class Restaurants(Database):
 
 
 class Locations(Database):
-    def __init__(self):
+    def __init__(self, user_id):
         super().__init__()
+        self.user_id = user_id
+        self.location_structure = {
+            "location_name": None,
+            "latitude": None,
+            "longitude": None
+        }
 
+        self.new_user_structure = {
+            'user_id': self.user_id,
+            'locations': {},
+            'restaurants': {}
+        }
+
+    # def generate_location_id = {
+      
+    # }
+
+    @decorators.print_func_name()
+    def insert_location_for_new_user(self):
+        try:
+            response = 'Empty'
+            data = self.new_user_structure
+            result = self.collection.insert_one(data)
+            if result is None:
+                raise errors.DatabaseUserInsertion()
+            else:
+                insertion_id = result.inserted_id
+                response = {
+                    'insertion_id': str(insertion_id)
+                }
+            return response
+        except Exception as e:
+            print(e)
+            raise e
+
+    def insert_for_existing_user():
+        pass
+    
 
 
 class Yelp(object):
