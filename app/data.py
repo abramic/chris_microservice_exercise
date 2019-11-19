@@ -136,11 +136,23 @@ def retrieve_for_multiple_cities(request):
 
 
 @decorators.print_func_name()
-def locations_handle_patch_with_id(user_id, body):
+def add_new_user(user_name):
     try:
-        db = orm.Locations(user_id)
-        response = db.insert_location_for_new_user()
+        db = orm.User(user_name)
+        response = db.insert_new_user()
         return response
     except Exception as e:
         print(e)
         raise e
+
+
+# @decorators.print_func_name()
+# def locations_handle_patch_with_id(user_id, body):
+#     try:
+#         user_name = 
+#         db = orm.User(user_name)
+#         response = db.insert_new_user()
+#         return response
+#     except Exception as e:
+#         print(e)
+#         raise e

@@ -19,6 +19,33 @@ class Database(object):
         except Exception as e:
             raise e
 
+class User(Database):
+    def __init__(self, user_name):
+        super().__init__()
+
+        self.new_user_structure = {
+            'user_name': user_name,
+            'locations': {},
+            'restaurants': {}
+        }
+
+    @decorators.print_func_name()
+    def insert_new_user(self):
+        try:
+            response = 'Empty'
+            data = self.new_user_structure
+            result = self.collection.insert_one(data)
+            if result is None:
+                raise errors.DatabaseUserInsertion()
+            else:
+                return {
+                    'id': str(result.inserted_id)
+                }
+            return response
+        except Exception as e:
+            print(e)
+            raise e
+
 
 class Restaurants(Database):
     def __init__(self):
@@ -50,36 +77,21 @@ class Locations(Database):
             "longitude": None
         }
 
-        self.new_user_structure = {
-            'user_id': self.user_id,
-            'locations': {},
-            'restaurants': {}
-        }
-
     # def generate_location_id = {
       
     # }
 
-    @decorators.print_func_name()
-    def insert_location_for_new_user(self):
-        try:
-            response = 'Empty'
-            data = self.new_user_structure
-            result = self.collection.insert_one(data)
-            if result is None:
-                raise errors.DatabaseUserInsertion()
-            else:
-                insertion_id = result.inserted_id
-                response = {
-                    'insertion_id': str(insertion_id)
-                }
-            return response
-        except Exception as e:
-            print(e)
-            raise e
 
-    def insert_for_existing_user():
-        pass
+    # @decorators.print_func_name()   
+    # def insert_new_location(self, user_name):
+    #     # for now, just use default location structure
+    #     result = self.collection.user_id.insert_one(user_name)
+    #     try: 
+            
+    #     pass
+
+    # def insert_for_existing_user():
+    #     pass
     
 
 

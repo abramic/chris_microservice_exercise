@@ -56,6 +56,22 @@ def handle_locations():
         print(e)
         raise e
 
+
+@app.route('/users', methods = ['POST'])
+@decorators.print_func_name()
+# @decorators.check_for_user_id()
+@decorators.handle_errors()
+def add_user():
+    try:
+        user_name = request.args.get('user_name')
+        response = data.add_new_user(user_name)
+        print(response)
+        return make_response(response, 200)
+
+    except Exception as e:
+        print(e)
+        raise e
+
 app.run(port=int('5001'), debug=True)
 # app.run(host='0.0.0.0', port=int('5001'), debug=True)
 
