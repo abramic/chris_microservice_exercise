@@ -99,16 +99,14 @@ def make_requests_for_single_city(name, latitude, longitude, results):
         raise e
 
 
-def retrieve_for_multiple_cities(request):
+def retrieve_for_multiple_cities(user_id, locations):
     results = []
-    cities = request.get_json()
 
     try:
-        user_id = request.args.get('user_id')
         threads = []
         # raise errors.RestaurantGetRequestInsertion()
         # raise errors.ChrisError()
-        for city in cities:
+        for id, city in locations.items():
             process = Thread(target=make_requests_for_single_city,
                              args=[city.get('location'), city.get('latitude'), city.get('longitude'), results])
             threads.append(process)
@@ -120,14 +118,10 @@ def retrieve_for_multiple_cities(request):
 # Additional code to practice pythons native reduce function
         # for city, vals in results.items():
         #     results[city] = create_dictionary_of_restaurant_names(vals)
-        results = {
-            'user_id': user_id,
-            'results': results,
-        }
 
         db = orm.Restaurants()
         # print(type(results))
-        response = db.insert_new_restaurants_for_user(results)
+        response = db.insert_restaurants(user_id, results)
         return response
 
     except Exception as e:
@@ -145,7 +139,7 @@ def add_new_user(user_name):
         print(e)
         raise e
 
-
+# TO DO - See if can refactor add_location, update_location and get_all_locations into a single function
 @decorators.print_func_name()
 def add_location(user_id, body):
     try:
@@ -174,5 +168,25 @@ def get_all_locations(user_id):
         db = orm.Locations()
         response = db.retrieve_all_locations(user_id)
         return response
-    except:
-        pass
+    except Exception as e:
+        raise e
+
+
+@decorators.print_func_name()
+def check_if_at_least_one_location(user_id):
+    try:
+        db = orm.Locations()
+        response = db.check_if_at_least_one_location(user_id)
+        return response
+    except Exception as e:
+        raise e
+
+
+@decorators.print_func_name()
+def check_if_at_least_one_restaurant(user_id):
+    try:
+        db = orm.Restaurants()
+        response = db.check_if_at_least_one_restaurant(user_id)
+        return response
+    except Exception as e:
+        raise e

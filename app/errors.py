@@ -33,6 +33,18 @@ class MissingUserIdInQueryString(BackendDefinedErrors):
         self.error_code = 700
         self.message = 'Please provide a user id' 
 
+class UserNotPresentInDatabase(BackendDefinedErrors):
+    def __init__(self):
+        super().__init__()
+        self.error_code = 800
+        self.message = 'User id is not present in database'
+
+class NoLocationsForThisUser(BackendDefinedErrors):
+    def __init__(self):
+        super().__init__()
+        self.error_code = 604
+        self.message = 'No locations for this user'  
+
 class DefaultBackendResponse(BackendDefinedErrors):
     def __init__(self, e):
         super().__init__()
