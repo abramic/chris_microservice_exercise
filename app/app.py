@@ -15,8 +15,9 @@ def hello():
     return "Hello World!"
 
 
-@app.route('/restaurants')
+@app.route('/restaurants', methods = ['GET', 'PATCH', 'POST', 'PUT', 'DELETE'])
 @decorators.print_func_name()
+@decorators.allowed_methods(['GET'])
 @decorators.check_for_user_id()
 @decorators.handle_errors()
 def handle_yelp_data():
@@ -32,8 +33,9 @@ def handle_yelp_data():
 
 
 
-@app.route('/locations', methods = ['GET', 'PATCH'])
+@app.route('/locations', methods = ['GET', 'PATCH', 'POST', 'PUT', 'DELETE'])
 @decorators.print_func_name()
+@decorators.allowed_methods(['GET', 'PATCH'])
 @decorators.check_for_user_id()
 @decorators.handle_errors()
 def handle_locations():
@@ -50,12 +52,12 @@ def handle_locations():
     elif(request.method == 'GET'):
         response = data.get_all_locations(user_id)
         return make_response(response, 200)
-    else:
-        raise Exception()
 
 
-@app.route('/users', methods = ['POST'])
+@app.route('/users', methods = ['GET', 'PATCH', 'POST', 'PUT', 'DELETE'])
 @decorators.print_func_name()
+@decorators.allowed_methods(['POST'])
+
 # @decorators.check_for_user_id()
 @decorators.handle_errors()
 def add_user():

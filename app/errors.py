@@ -3,6 +3,14 @@ class BackendDefinedErrors(Exception):
         self.error_code = None
         self.message = 'Default Backend Response'
 
+
+class EndpointMethodNotAllowed(Exception):
+    def __init__(self):
+        super().__init__()
+        self.error_code = 405
+        self.message = 'Method not allowed for this endpoint'
+
+
 class RestaurantGetRequestInsertion(BackendDefinedErrors):
     def __init__(self):
         super().__init__()
