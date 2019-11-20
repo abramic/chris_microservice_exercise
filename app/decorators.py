@@ -29,25 +29,29 @@ def allowed_methods(allowed_methods):
         return decorated
     return decorator
 
-# can we invoke this in such a way that we throw the errors into the handle_errors decorator, to ensure that all errors get handled in the same place?
-# we could just do this validation in handle errors, I suppose but we may not want it/need it for every endpoint (and we'd want to call handle_errors on most all endpoints)
+
+def check_for_user_name():
+    def decorator(f):
+        @wraps(f)
+        def decorated(*args, **kwargs):
+            if 'user_name' not in request.args.keys():
+                error_response = helpers.format_error_message(errors.MissingUserNameInQueryString())
+                return make_response(error_response, 400)
+            else:
+                return f(*args, **kwargs)
+        return decorated
+    return decorator
+
+
 def check_for_user_id():
     def decorator(f):
         @wraps(f)
         def decorated(*args, **kwargs):
-            default_response = helpers.format_error_message(errors.BackendDefinedErrors())
-            result = make_response(default_response, 500)
-            try:
-                if 'user_id' not in request.args.keys():
-                    error_response = helpers.format_error_message(errors.MissingUserIdInQueryString())
-                    result = make_response(error_response, 400)
-                else:
-                    result = f(*args, **kwargs)
-            except Exception as e:
-                    error_message = helpers.format_error_message(errors.DefaultBackendResponse(e))
-                    result = make_response(error_response, 500)
-            finally:
-                return result
+            if 'user_id' not in request.args.keys():
+                error_response = helpers.format_error_message(errors.MissingUserIdInQueryString())
+                return make_response(error_response, 400)
+            else:
+                return f(*args, **kwargs)
         return decorated
     return decorator
 

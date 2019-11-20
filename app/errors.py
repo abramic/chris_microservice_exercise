@@ -41,6 +41,12 @@ class MissingUserIdInQueryString(BackendDefinedErrors):
         self.error_code = 700
         self.message = 'Please provide a user id' 
 
+class MissingUserNameInQueryString(BackendDefinedErrors):
+    def __init__(self):
+        super().__init__()
+        self.error_code = 701
+        self.message = 'Please provide a user name' 
+
 class UserNotPresentInDatabase(BackendDefinedErrors):
     def __init__(self):
         super().__init__()

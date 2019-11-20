@@ -32,7 +32,6 @@ def handle_yelp_data():
     return make_response(jsonify(restaurants_page), 200)
 
 
-
 @app.route('/locations', methods = ['GET', 'PATCH', 'POST', 'PUT', 'DELETE'])
 @decorators.print_func_name()
 @decorators.allowed_methods(['GET', 'PATCH'])
@@ -57,8 +56,7 @@ def handle_locations():
 @app.route('/users', methods = ['GET', 'PATCH', 'POST', 'PUT', 'DELETE'])
 @decorators.print_func_name()
 @decorators.allowed_methods(['POST'])
-
-# @decorators.check_for_user_id()
+@decorators.check_for_user_name()
 @decorators.handle_errors()
 def add_user():
     user_name = request.args.get('user_name')
