@@ -3,12 +3,9 @@ from flask import make_response, request
 from json import dumps
 
 import time
-
-
 import errors
 import helpers
 
-# import helpers
 
 def print_func_name():
     def decorator(f):
@@ -48,10 +45,8 @@ def handle_errors():
         def decorated(*args, **kwargs):
             result = make_response('message: Unknown issue', 500)
             try:
-                # Turn response to JSON here in all cases
                 result = f(*args, **kwargs)                
             except Exception as e:
-                # Check for backend defined errors
                 parent_class = errors.BackendDefinedErrors()
                 if isinstance(e, type(parent_class)):
                     message = helpers.format_error_message(e)
@@ -92,13 +87,5 @@ def retry_func(retries=10):
     return decorator
 
 
-# def return_just_businesses(businesses):
-#     def decorator(f):
-#         @wraps(f)
-#         def decorated(*args, **kwargs):
-#             response = f(*args, **kwargs)
-#             for item in response['businesses']:
-#                 businesses.append(item)
-#             return businesses
-#     return decorator
+
 

@@ -28,66 +28,45 @@ class User(Database):
             'restaurants': {}
         }
 
+
     @decorators.print_func_name()
     def insert_new_user(self):
-        try:
-            response = 'Empty'
-            data = self.new_user_structure
-            result = self.collection.insert_one(data)
-            if result is None:
-                raise errors.DatabaseUserInsertion()
-            else:
-                return {
-                    'id': str(result.inserted_id)
-                }
-            return response
-        except Exception as e:
-            print(e)
-            raise e
+        response = 'Empty'
+        data = self.new_user_structure
+        result = self.collection.insert_one(data)
+        if result is None:
+            raise errors.DatabaseUserInsertion()
+        else:
+            return {
+                'id': str(result.inserted_id)
+            }
+        return response
 
 
 class Restaurants(Database):
     def __init__(self):
         super().__init__()
 
-    # @decorators.print_func_name()
-    # def insert_new_restaurants_for_user(self, data):
-    #     try:
-    #         result = self.collection.insert_one(data)
-    #         if result is None:
-    #             raise errors.RestaurantGetRequestInsertion()
-    #         else:
-    #             insertion_id = result.inserted_id
-    #             response = {
-    #                 'insertion_id': str(insertion_id)
-    #             }
-    #             return response
-    #     except Exception as e:
-    #         raise e
 
-
+    @decorators.print_func_name()
     def check_if_at_least_one_restaurant(self, user_id):
-        try:
-            result = self.collection.find_one({
-                    '_id': ObjectId(user_id)
-                },{
-                  'restaurants': 1
-                }
-            )
-            if result is None: raise errors.UserNotPresentInDatabase()
-            restaurants = result.get('restaurants', None)
-            if len(restaurants) == 0: 
-                return False
-            else:
-                return True
-        except Exception as e:
-            raise e
+        result = self.collection.find_one({
+                '_id': ObjectId(user_id)
+            },{
+                'restaurants': 1
+            }
+        )
+        if result is None: raise errors.UserNotPresentInDatabase()
+        restaurants = result.get('restaurants', None)
+        if len(restaurants) == 0: 
+            return False
+        else:
+            return True
 
 
     # TO DO - Expand error handling capabilities on such functions, right now we're just returning if we get that far
     @decorators.print_func_name()
     def insert_restaurants(self, user_id, restaurants):
-        try:
             response = self.collection.update({
                 '_id': ObjectId(user_id),
                 },
@@ -98,32 +77,21 @@ class Restaurants(Database):
                 }
             )
             return {}
-        except Exception as e:
-            pass
 
 
     @decorators.print_func_name()
     def retrieve_page_of_restaurants(self, user_id, limit, offset):
-        try:
-            print('LIMIT', limit)
-            print('OFFSET', offset)
-            response = self.collection.find({
-                '_id': ObjectId(user_id),
-                },
-                {
-                    "restaurants": { 
-                        "$slice": [ offset , limit ] 
-                    }  
-                }
-            )
-            # print(list(response))
-            page = response[0]['restaurants']
-            # print(page)
-            return page
-        except Exception as e:
-            print('Error thrown', e)
-            pass
-
+        response = self.collection.find({
+            '_id': ObjectId(user_id),
+            },
+            {
+                "restaurants": { 
+                    "$slice": [ offset , limit ] 
+                }  
+            }
+        )
+        page = response[0]['restaurants']
+        return page
 
 
 class Locations(Database):
@@ -138,85 +106,69 @@ class Locations(Database):
 
     @decorators.print_func_name()   
     def insert_new_location(self, user_id, body):
-        # for now, just use default location structure
-        # print(user_id, body)
-        try: 
-            record_object_id = ObjectId()
-            response = self.collection.update({
-                '_id': ObjectId(user_id),
-                },
-                {
-                    "$set": {
-                        f"locations.{record_object_id}": body
-                    }
+        record_object_id = ObjectId()
+        response = self.collection.update({
+            '_id': ObjectId(user_id),
+            },
+            {
+                "$set": {
+                    f"locations.{record_object_id}": body
                 }
-            )
-            print(response)
-            # TO DO: Add additional validation and error handling on response body
-            return {
-                'id': str(record_object_id)
             }
-        except Exception as e:
-            raise errors.DatabaseLocationInsertion(e)
+        )
+        print(response)
+        # TO DO: Add additional validation and error handling on response body
+        return {
+            'id': str(record_object_id)
+        }
 
 
     @decorators.print_func_name()   
     def update_location(self, user_id, location_id, body):
-        try:
-            print('body is', body)
-            base_set_path = f"locations.{location_id}"
-            set_object = {}
-            for key in body.keys():
-                set_object[f"{base_set_path}.{key}"] = body.get(key)
-            print(set_object)
-            response = self.collection.update({
-                '_id': ObjectId(user_id),
-                },
-                {
-                    "$set": set_object
-                }
-            )
-            return {
-                'id': location_id,
-            }           
-        except Exception as e:
-            raise e
+        base_set_path = f"locations.{location_id}"
+        set_object = {}
+        for key in body.keys():
+            set_object[f"{base_set_path}.{key}"] = body.get(key)
+        response = self.collection.update({
+            '_id': ObjectId(user_id),
+            },
+            {
+                "$set": set_object
+            }
+        )
+        return {
+            'id': location_id,
+        }           
 
 
     @decorators.print_func_name()   
     def retrieve_all_locations(self, user_id):
-        try:
-            result = self.collection.find_one({
-                    '_id': ObjectId(user_id)
-                },{
-                  'locations': 1
-                }
-            )
-            if result is None: raise errors.UserNotPresentInDatabase()
-            locations = result.get('locations', None)
-            if locations is None: raise errors.NoLocationsForThisUser()
-            return locations
-        except Exception as e:
-            raise e
+        result = self.collection.find_one({
+                '_id': ObjectId(user_id)
+            },{
+                'locations': 1
+            }
+        )
+        if result is None: raise errors.UserNotPresentInDatabase()
+        locations = result.get('locations', None)
+        if locations is None: raise errors.NoLocationsForThisUser()
+        return locations
 
 
     @decorators.print_func_name()   
     def check_if_at_least_one_location(self, user_id):
-        try:
-            result = self.collection.find_one({
-                    '_id': ObjectId(user_id)
-                },{
-                  'locations': 1
-                }
-            )
-            if result is None: raise errors.UserNotPresentInDatabase()
-            print(result)
-            locations = result.get('locations', None)
-            print(locations)
-            if locations is None or len(locations) == 0: raise errors.NoLocationsForThisUser()
-            return locations
-        except Exception as e:
-            raise e
+        result = self.collection.find_one({
+                '_id': ObjectId(user_id)
+            },{
+                'locations': 1
+            }
+        )
+        if result is None: raise errors.UserNotPresentInDatabase()
+        print(result)
+        locations = result.get('locations', None)
+        print(locations)
+        if locations is None or len(locations) == 0: raise errors.NoLocationsForThisUser()
+        return locations
 
 
 class Yelp(object):
@@ -226,17 +178,14 @@ class Yelp(object):
     @decorators.print_func_name()
     @decorators.retry_func(retries=5)
     def get(self, parameters):
-        try:
-            response = requests.get(
-                'https://api.yelp.com/v3/businesses/search',
-                parameters,
-                headers={
-                    'authorization': self.token
-                }
-            )
-            if response.status_code != 200:
-                if response.status_code == 429:
-                    raise errors.YelpConcurrencyError()
-            return response.json()
-        except Exception as e:
-            raise e
+        response = requests.get(
+            'https://api.yelp.com/v3/businesses/search',
+            parameters,
+            headers={
+                'authorization': self.token
+            }
+        )
+        if response.status_code != 200:
+            if response.status_code == 429:
+                raise errors.YelpConcurrencyError()
+        return response.json()

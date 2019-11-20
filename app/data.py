@@ -5,28 +5,7 @@ from json import dumps
 import decorators
 import orm
 import helpers
-# import errors
-
-
-def create_dictionary_of_restaurant_names(city):
-    businesses = city.get('businesses')
-
-    if businesses is not None:
-        city['chris_keys_check'] = len(city['businesses'])
-        def reducer(acc, item):
-            if item.get('alias') is not None:
-                name = item.get('alias')
-                if acc.get(name) is not None:
-                    acc[name] += 1
-                else:
-                    acc[name] = 1
-            return acc
-        city['businesses'] = reduce(reducer, businesses, {})
-    else:
-        city['businesses'] = {
-            'error': 'Error in reduce'
-        }
-    return city
+import errors
 
 
 @decorators.print_func_name()
@@ -40,164 +19,123 @@ def make_get_request_from_yelp_just_businesses(connection, parameters, businesse
             businesses.append(item)
     return businesses
 
+
 @decorators.print_func_name()
 def make_requests_for_single_city(name, latitude, longitude, results):
-    try:
-        # first page
-        limit = 50
-        offset = 0
-        # do the first one on its own
-        parameters = {
-            'limit': 50,
-            'offset': offset,
-            'latitude': latitude,
-            'longitude': longitude,
-            'radius': 500
-        }
-        yelp = orm.Yelp()
-        response = yelp.get(parameters)
+    limit = 50
+    offset = 0
+    parameters = {
+        'limit': 50,
+        'offset': offset,
+        'latitude': latitude,
+        'longitude': longitude,
+        'radius': 500
+    }
+    yelp = orm.Yelp()
+    response = yelp.get(parameters)
 
-        offset += limit
-        total_businesses = [*response['businesses']]
-        if offset < response['total']:
-            while offset < response['total']:
-# Looping solution
-                parameters.update({'offset': offset})
-                total_businesses = make_get_request_from_yelp_just_businesses(yelp, parameters, total_businesses)
-                offset += limit
+    offset += limit
+    total_businesses = [*response['businesses']]
+    if offset < response['total']:
+        while offset < response['total']:
+            # Looping solution
+            parameters.update({'offset': offset})
+            total_businesses = make_get_request_from_yelp_just_businesses(yelp, parameters, total_businesses)
+            offset += limit
 
-# Threading solution
+            # Threading solution
 
-                #
-                # subthreads = []
-                # # There's some kind of issue here which seems to relate to how parameters are passed into args for the Thread
-                #     pag_parameters = {
-                #         'limit': 50,
-                #         'offset': offset,
-                #         'latitude': latitude,
-                #         'longitude': longitude,
-                #         'radius': 500
-                #     }
-                #
-                #     parameters.update({'offset': offset})
-                #     # pag_parameters = parameters
-                #     # print(pag_parameters)
-                #     process = Thread(target=make_get_request_from_yelp_just_businesses, args=[pag_parameters, headers, total_businesses])
-                #     subthreads.append(process)
-                #     offset += limit
-                #
-                # for process in subthreads:
-                #     process.start()
-                # for process in subthreads:
-                #     process.join()
+            #
+            # subthreads = []
+            # # There's some kind of issue here which seems to relate to how parameters are passed into args for the Thread
+            #     pag_parameters = {
+            #         'limit': 50,
+            #         'offset': offset,
+            #         'latitude': latitude,
+            #         'longitude': longitude,
+            #         'radius': 500
+            #     }
+            #
+            #     parameters.update({'offset': offset})
+            #     # pag_parameters = parameters
+            #     # print(pag_parameters)
+            #     process = Thread(target=make_get_request_from_yelp_just_businesses, args=[pag_parameters, headers, total_businesses])
+            #     subthreads.append(process)
+            #     offset += limit
+            #
+            # for process in subthreads:
+            #     process.start()
+            # for process in subthreads:
+            #     process.join()
 
-                # response['businesses'] = total_businesses
-        results = helpers.modify_businesses(total_businesses, results, name)
-        return results
-        # Create dictionary of names for each
-    except Exception as e:
-        raise e
+            # response['businesses'] = total_businesses
+    results = helpers.modify_businesses(total_businesses, results, name)
+    return results
 
 
 def retrieve_for_multiple_cities(user_id, locations):
     results = []
+    threads = []
+    for id, city in locations.items():
+        process = Thread(target=make_requests_for_single_city,
+                            args=[city.get('location'), city.get('latitude'), city.get('longitude'), results])
+        threads.append(process)
 
-    try:
-        threads = []
-        # raise errors.RestaurantGetRequestInsertion()
-        # raise errors.ChrisError()
-        for id, city in locations.items():
-            process = Thread(target=make_requests_for_single_city,
-                             args=[city.get('location'), city.get('latitude'), city.get('longitude'), results])
-            threads.append(process)
+    for process in threads:
+        process.start()
+    for process in threads:
+        process.join()
 
-        for process in threads:
-            process.start()
-        for process in threads:
-            process.join()
-# Additional code to practice pythons native reduce function
-        # for city, vals in results.items():
-        #     results[city] = create_dictionary_of_restaurant_names(vals)
-
-        db = orm.Restaurants()
-        # print(type(results))
-        response = db.insert_restaurants(user_id, results)
-        return response
-
-    except Exception as e:
-        print(e)
-        raise e
+    db = orm.Restaurants()
+    response = db.insert_restaurants(user_id, results)
+    return response
 
 
 @decorators.print_func_name()
 def add_new_user(user_name):
-    try:
-        db = orm.User(user_name)
-        response = db.insert_new_user()
-        return response
-    except Exception as e:
-        print(e)
-        raise e
+    db = orm.User(user_name)
+    response = db.insert_new_user()
+    return response
+
 
 # TO DO - See if can refactor add_location, update_location and get_all_locations into a single function
 @decorators.print_func_name()
 def add_location(user_id, body):
-    try:
-        db = orm.Locations()
-        response = db.insert_new_location(user_id, body)
-        return response
-    except Exception as e:
-        print(e)
-        raise e
+    db = orm.Locations()
+    response = db.insert_new_location(user_id, body)
+    return response
 
 
 @decorators.print_func_name()
 def update_location(user_id, location_id, body):
-    try:
-        db = orm.Locations()
-        response = db.update_location(user_id, location_id, body)
-        return response
-    except Exception as e:
-        print(e)
-        raise e
+    db = orm.Locations()
+    response = db.update_location(user_id, location_id, body)
+    return response
 
 
 @decorators.print_func_name()
 def get_all_locations(user_id):
-    try:
-        db = orm.Locations()
-        response = db.retrieve_all_locations(user_id)
-        return response
-    except Exception as e:
-        raise e
+    db = orm.Locations()
+    response = db.retrieve_all_locations(user_id)
+    return response
 
 
 @decorators.print_func_name()
 def check_if_at_least_one_location(user_id):
-    try:
-        db = orm.Locations()
-        response = db.check_if_at_least_one_location(user_id)
-        return response
-    except Exception as e:
-        raise e
+    db = orm.Locations()
+    response = db.check_if_at_least_one_location(user_id)
+    return response
 
 
 @decorators.print_func_name()
 def check_if_at_least_one_restaurant(user_id):
-    try:
-        db = orm.Restaurants()
-        response = db.check_if_at_least_one_restaurant(user_id)
-        return response
-    except Exception as e:
-        raise e
+    db = orm.Restaurants()
+    response = db.check_if_at_least_one_restaurant(user_id)
+    return response
 
 
 @decorators.print_func_name()
 def retrieve_page_of_restaurants(user_id, limit, offset):
-    try:
-        db = orm.Restaurants()
-        page = db.retrieve_page_of_restaurants(user_id, limit, offset)
-        # print(page)
-        return page
-    except Exception as e:
-        raise e
+    db = orm.Restaurants()
+    page = db.retrieve_page_of_restaurants(user_id, limit, offset)
+    return page
