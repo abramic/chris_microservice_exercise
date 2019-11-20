@@ -139,3 +139,15 @@ def retrieve_page_of_restaurants(user_id, limit, offset):
     db = orm.Restaurants()
     page = db.retrieve_page_of_restaurants(user_id, limit, offset)
     return page
+
+# should take two inputs: the request data structure and the required data structure
+# will compare the prop name and also the type in both recursively and let the user know if a prop is in there that shouldn't be and if there are type mismatches
+
+def validate_against_required_structure():
+    def decorator(f):
+        @wraps(f)
+        def decorated(*args, **kwargs):
+            
+            return f(*args, **kwargs) 
+        return decorated
+    return decorator

@@ -5,6 +5,8 @@ import bson
 from json import dumps
 from pymongo import MongoClient
 from bson.objectid import ObjectId
+from functools import wraps
+
 
 import decorators
 import errors
@@ -98,10 +100,10 @@ class Locations(Database):
     def __init__(self):
         super().__init__()
         self.location_structure = {
-            "location_name": None,
-            "latitude": None,
-            "longitude": None
-        }
+            "location_name": 'str',
+            "latitude": 'str',
+            "longitude": 'str'
+        }               
 
 
     @decorators.print_func_name()   
