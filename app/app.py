@@ -21,13 +21,17 @@ def hello():
 def handle_yelp_data():
     try:
         user_id = request.args.get('user_id')
+        limit = int(request.args.get('limit', 20))
+        offset = int(request.args.get('offset', 0))
         locations = data.check_if_at_least_one_location(user_id)
         restaurants_present = data.check_if_at_least_one_restaurant(user_id)
         if restaurants_present is False:
             data.retrieve_for_multiple_cities(user_id, locations)
-            return make_response('Restaurants Added From Yelp!', 200)
-        else:
-            return make_response('Restaurants Already There!', 200)
+            # return make_response('Restaurants Added From Yelp!', 200)
+        # else:
+        #     return make_response('Restaurants Already There!', 200)
+        restaurants_page = data.retrieve_page_of_restaurants(user_id, limit, offset)
+        return make_response(jsonify(restaurants_page), 200)
     except Exception as e:
         # print(e)
         raise e

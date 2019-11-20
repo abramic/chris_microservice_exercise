@@ -1,5 +1,7 @@
 import os
 import requests
+import bson
+
 from json import dumps
 from pymongo import MongoClient
 from bson.objectid import ObjectId
@@ -100,6 +102,30 @@ class Restaurants(Database):
             pass
 
 
+    @decorators.print_func_name()
+    def retrieve_page_of_restaurants(self, user_id, limit, offset):
+        try:
+            print('LIMIT', limit)
+            print('OFFSET', offset)
+            response = self.collection.find({
+                '_id': ObjectId(user_id),
+                },
+                {
+                    "restaurants": { 
+                        "$slice": [ offset , limit ] 
+                    }  
+                }
+            )
+            # print(list(response))
+            page = response[0]['restaurants']
+            # print(page)
+            return page
+        except Exception as e:
+            print('Error thrown', e)
+            pass
+
+
+
 class Locations(Database):
     def __init__(self):
         super().__init__()
@@ -108,6 +134,7 @@ class Locations(Database):
             "latitude": None,
             "longitude": None
         }
+
 
     @decorators.print_func_name()   
     def insert_new_location(self, user_id, body):
@@ -132,6 +159,7 @@ class Locations(Database):
         except Exception as e:
             raise errors.DatabaseLocationInsertion(e)
 
+
     @decorators.print_func_name()   
     def update_location(self, user_id, location_id, body):
         try:
@@ -154,6 +182,7 @@ class Locations(Database):
         except Exception as e:
             raise e
 
+
     @decorators.print_func_name()   
     def retrieve_all_locations(self, user_id):
         try:
@@ -169,7 +198,8 @@ class Locations(Database):
             return locations
         except Exception as e:
             raise e
-    
+
+
     @decorators.print_func_name()   
     def check_if_at_least_one_location(self, user_id):
         try:

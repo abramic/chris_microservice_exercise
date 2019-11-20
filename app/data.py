@@ -190,3 +190,14 @@ def check_if_at_least_one_restaurant(user_id):
         return response
     except Exception as e:
         raise e
+
+
+@decorators.print_func_name()
+def retrieve_page_of_restaurants(user_id, limit, offset):
+    try:
+        db = orm.Restaurants()
+        page = db.retrieve_page_of_restaurants(user_id, limit, offset)
+        # print(page)
+        return page
+    except Exception as e:
+        raise e
