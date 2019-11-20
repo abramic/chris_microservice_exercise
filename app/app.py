@@ -9,6 +9,7 @@ load_dotenv()
 app = Flask("chris_server")
 
 
+@decorators.print_func_name()
 @app.route('/')
 def hello():
     return "Hello World from new repo file!"
@@ -20,6 +21,7 @@ def hello():
 @decorators.handle_errors()
 def handle_yelp_data():
     try:
+        print('Hello World!')
         user_id = request.args.get('user_id')
         limit = int(request.args.get('limit', 20))
         offset = int(request.args.get('offset', 0))
