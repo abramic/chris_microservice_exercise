@@ -19,6 +19,7 @@ def hello():
 @decorators.print_func_name()
 @decorators.allowed_methods(['GET'])
 @decorators.check_for_user_id()
+@decorators.check_for_integer_params(['limit', 'offset'])
 @decorators.handle_errors()
 def handle_yelp_data():
     user_id = request.args.get('user_id')

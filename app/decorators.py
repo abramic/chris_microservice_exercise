@@ -17,6 +17,27 @@ def print_func_name():
     return decorator
 
 
+def check_for_integer_params(params: list):
+    def decorator(f):
+        @wraps(f)
+        def decorated(*args, **kwargs):
+            try:
+                for param in params:
+                    value = request.args.get(param)
+                    param_as_int = int(value)
+                    if param_as_int != 0:
+                        if float(value) / int(value) != 1.0: raise Exception()
+                        if param_as_int < 0: raise Exception()
+                        if param_as_int < 1 and param == 'limit': raise Exception()
+                return f(*args, **kwargs)
+            except Exception as e:
+                print(e)
+                error_response = helpers.format_error_message(errors.ParamMustBeInteger())
+                return make_response(error_response, 400) 
+        return decorated
+    return decorator
+
+
 def allowed_methods(allowed_methods):
     def decorator(f):
         @wraps(f)

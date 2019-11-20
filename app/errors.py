@@ -47,6 +47,12 @@ class MissingUserNameInQueryString(BackendDefinedErrors):
         self.error_code = 701
         self.message = 'Please provide a user name' 
 
+class ParamMustBeInteger(BackendDefinedErrors):
+    def __init__(self):
+        super().__init__()
+        self.error_code = 702
+        self.message = 'Limit and offset must be integers.  Limit must be greater than zero, and offset can be greater than or equal to zero'    
+
 class UserNotPresentInDatabase(BackendDefinedErrors):
     def __init__(self):
         super().__init__()
