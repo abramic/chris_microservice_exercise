@@ -9,9 +9,9 @@ import errors
 
 
 location_structure = {
-    "location_name": 'str',
-    "latitude": 'str',
-    "longitude": 'str'
+    "location": 'str',
+    "latitude": 'float',
+    "longitude": 'float'
 } 
 
 

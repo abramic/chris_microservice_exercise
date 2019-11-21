@@ -122,6 +122,7 @@ def retry_func(retries=10):
     return decorator
 
 
+# just for a dictionary without nested values at this point
 def basic_validate_against_model_locations(model, all_props_required):
     def decorator(f):
         @wraps(f)
@@ -130,6 +131,17 @@ def basic_validate_against_model_locations(model, all_props_required):
             body_type = type(body).__name__ 
             model_type = type(model).__name__
             if body_type != model_type: raise errors.RequestBodyPropTypeError('Request Body', body_type, model_type)
+            # assumes model is dictionary - validation above should handle that given the model passed in for now
+            for prop, val in model.items():
+                body_prop = body.get(prop, None)
+                if body_prop == None and all_props_required == True: raise errors.RequiredPropNotPresent(prop)
+                if body_prop != None:
+                    body_prop_type = type(body_prop).__name__
+                    if body_prop_type != val: raise errors.RequestBodyPropTypeError(prop, body_prop_type, val)
+            
+            # loop through once more to make sure that there aren't extra properties present
+            for prop, val in body.items():
+                if model.get(prop, None) == None: raise errors.ExtraPropsInRequestBody(prop)
 
             return f(*args, **kwargs)
         return decorated
