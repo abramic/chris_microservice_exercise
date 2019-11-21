@@ -53,6 +53,20 @@ class ParamMustBeInteger(BackendDefinedErrors):
         self.error_code = 702
         self.message = 'Limit and offset must be integers.  Limit must be greater than zero, and offset can be greater than or equal to zero'    
 
+class RequestBodyPropValidationError(BackendDefinedErrors):
+    def __init__(self, prop):
+        super().__init__()
+        self.error_code = 703
+        self.message = f'Request body data structure should not contain the following property: {prop}'    
+
+
+class RequestBodyPropTypeError(BackendDefinedErrors):
+    def __init__(self, prop, user_type, appropriate_type):
+        super().__init__()
+        self.error_code = 704
+        self.message = f'Error on the following request prop: {prop}.  Type {user_type} is not correct.  Use {appropriate_type} instead'  
+
+
 class UserNotPresentInDatabase(BackendDefinedErrors):
     def __init__(self):
         super().__init__()

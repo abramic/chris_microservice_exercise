@@ -99,12 +99,7 @@ class Restaurants(Database):
 class Locations(Database):
     def __init__(self):
         super().__init__()
-        self.location_structure = {
-            "location_name": 'str',
-            "latitude": 'str',
-            "longitude": 'str'
-        }               
-
+              
 
     @decorators.print_func_name()   
     def insert_new_location(self, user_id, body):

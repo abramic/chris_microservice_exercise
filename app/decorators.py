@@ -88,10 +88,7 @@ def handle_errors():
                 parent_class = errors.BackendDefinedErrors()
                 if isinstance(e, type(parent_class)):
                     message = helpers.format_error_message(e)
-                    # print('Message ', message)
                     result = make_response(message, 400)                    
-               
-
                 else:
                     result = make_response({'message': f"{e}"}, 500)
             finally:
@@ -125,5 +122,17 @@ def retry_func(retries=10):
     return decorator
 
 
+def basic_validate_against_model_locations(model, all_props_required):
+    def decorator(f):
+        @wraps(f)
+        def decorated(*args, **kwargs):
+            body = request.get_json()
+            body_type = type(body).__name__ 
+            model_type = type(model).__name__
+            if body_type != model_type: raise errors.RequestBodyPropTypeError('Request Body', body_type, model_type)
+
+            return f(*args, **kwargs)
+        return decorated
+    return decorator
 
 
