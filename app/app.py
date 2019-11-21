@@ -12,8 +12,8 @@ app = Flask("chris_server")
 @decorators.print_func_name()
 @app.route('/')
 def hello():
-    return "Hello World!"
-
+    return {"prop": "Hello World!"}
+    # return 'Hello World!'
 
 @app.route('/restaurants', methods = ['GET', 'PATCH', 'POST', 'PUT', 'DELETE'])
 @decorators.print_func_name()
@@ -68,9 +68,9 @@ def add_user():
 
 
 # app.run(port=int('5001'), debug=True)
-app.run(host='0.0.0.0', port=int('5001'), debug=True)
+# app.run(host='0.0.0.0', port=int('5001'), debug=True)
 
-# app.run(debug=True)
+app.run()
 
 
 # content for test commit
