@@ -67,8 +67,8 @@ def add_user():
     return make_response(response, 200)
 
 
-app.run(port=int('5001'), debug=True)
-# app.run(host='0.0.0.0', port=int('5001'), debug=True)
+# app.run(port=int('5001'), debug=True)
+app.run(host='0.0.0.0', port=int('5001'), debug=True)
 
 # app.run(debug=True)
 

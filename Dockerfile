@@ -21,8 +21,6 @@ RUN pip3 install -r requirements.txt
 # run the python server
 
 EXPOSE 5001
-YELP_BEARER_TOKEN = 'Bearer 7KMbFiLj0HZ7K3QtQqW4BoVcWiYx5cbCfrYCATsq3kafy6ui-xGYRZ72GCUib6beNgOe23VDuu5zgBG6RZwfXZa26Sl0jrm54SwcBIFOZ0tkF55qaZ-SyIjciajPWnYx'
-DB_MICROSERVICE_URL = 'http://localhost:5000'
 CMD python3 app/app.py
 
 
