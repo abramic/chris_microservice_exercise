@@ -11,7 +11,6 @@ from functools import wraps
 import decorators
 import errors
 
-
 # TO DO:  Potentially move all these subclasses out of Database and make everything a database class
 class Database(object):
     def __init__(self):
@@ -88,12 +87,23 @@ class Restaurants(Database):
             },
             {
                 "restaurants": { 
-                    "$slice": [ offset , limit ] 
+                    "$slice": [ offset , limit ]
                 }  
-            }
+            },
         )
-        page = response[0]['restaurants']
-        return page
+        restaurants = response[0]['restaurants']
+        second_response = self.collection.find({
+            '_id': ObjectId(user_id),
+            },
+            {
+                "restaurants": 1 
+            },
+        )   
+        length = len(second_response[0]['restaurants'])
+        return {
+            'restaurants': restaurants,
+            'total': length
+        }
 
 
 class Locations(Database):
@@ -154,6 +164,7 @@ class Locations(Database):
 
     @decorators.print_func_name()   
     def check_if_at_least_one_location(self, user_id):
+        # print(os.getenv('MONGO_ATLAS_CONNECTION_STRING'))
         result = self.collection.find_one({
                 '_id': ObjectId(user_id)
             },{
@@ -171,6 +182,7 @@ class Locations(Database):
 class Yelp(object):
     def __init__(self, token=os.getenv('YELP_BEARER_TOKEN')):
         self.token = token
+
 
     @decorators.print_func_name()
     @decorators.retry_func(retries=5)

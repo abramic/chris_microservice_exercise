@@ -28,7 +28,7 @@ def check_for_integer_params(params: list):
                     if param_as_int != 0:
                         if float(value) / int(value) != 1.0: raise Exception()
                         if param_as_int < 0: raise Exception()
-                        if param_as_int < 1 and param == 'limit': raise Exception()
+                        if param_as_int < 1 and param == 'limit': raise Exception()                
                 return f(*args, **kwargs)
             except Exception as e:
                 print(e)
@@ -37,6 +37,18 @@ def check_for_integer_params(params: list):
         return decorated
     return decorator
 
+
+def check_for_limit_too_large():
+    def decorator(f):
+        @wraps(f)
+        def decorated(*args, **kwargs): 
+            limit = request.args.get('limit', None)
+            if limit is not None and int(limit) > 20: 
+                error_response = helpers.format_error_message(errors.LimitTooLarge(limit))
+                return make_response(error_response, 400)
+            return f(*args, **kwargs)
+        return decorated
+    return decorator
 
 def allowed_methods(allowed_methods):
     def decorator(f):
