@@ -71,6 +71,16 @@ class TestServer(unittest.TestCase):
         self.location_handler_errors(resp, '400 BAD REQUEST', 701)
 
 
+    def test_location_new_with_incorrect_structure(self):
+        payload = [{
+            "location": "new_york",
+            "latitude": 40.785091,
+            "longitude": -73.968285
+        }]
+        resp = self.app.patch(f'/locations?user_id={self.user_id[0]}', json=payload)
+        self.location_handler_errors(resp, '400 BAD REQUEST', 801)
+
+
     def test_location_new_with_unallowed_property(self):
         payload = {
             "location": "new_york",
@@ -92,7 +102,14 @@ class TestServer(unittest.TestCase):
         self.location_handler_errors(resp, '400 BAD REQUEST', 803) 
 
 
-
+    def test_location_if_prop_is_wrong_type(self):
+        payload = {
+            "location": "new_york",
+            "latitude": [40.785091],
+            "longitude": -73.968285,
+        }
+        resp = self.app.patch(f'/locations?user_id={self.user_id[0]}', json=payload)
+        self.location_handler_errors(resp, '400 BAD REQUEST', 802) 
 
 if __name__ == "__main__":
     unittest.main()

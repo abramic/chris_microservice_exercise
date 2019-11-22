@@ -142,7 +142,7 @@ def basic_validate_against_model_locations(model, all_props_required):
             body = request.get_json()
             body_type = type(body).__name__ 
             model_type = type(model).__name__
-            if body_type != model_type: raise errors.RequestBodyPropTypeError('Request Body', body_type, model_type)
+            if body_type != model_type: raise errors.RequestBodyStructureError(model_type)
             # assumes model is dictionary - validation above should handle that given the model passed in for now
             for prop, val in model.items():
                 body_prop = body.get(prop, None)
@@ -153,7 +153,7 @@ def basic_validate_against_model_locations(model, all_props_required):
             
             # loop through once more to make sure that there aren't extra properties present
             for prop, val in body.items():
-                if model.get(prop, None) == None: raise errors.ExtraPropsInRequestBody(prop)
+                if model.get(prop, None) == None: raise errors.RequestBodyPropValidationError(prop)
 
             return f(*args, **kwargs)
         return decorated

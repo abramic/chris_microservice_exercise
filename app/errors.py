@@ -100,11 +100,13 @@ class LimitTooLarge(BackendDefinedErrors):
 # Validation Errors (In payload)
 
 
-class RequestBodyPropValidationError(BackendDefinedErrors):
-    def __init__(self, prop):
+
+
+class RequestBodyStructureError(BackendDefinedErrors):
+    def __init__(self, model_type):
         super().__init__()
         self.error_code = 801
-        self.message = f'Request body data structure should not contain the following property: {prop}'    
+        self.message = f'Request body data structure should be of the following type: {model_type}'    
 
 
 class RequestBodyPropTypeError(BackendDefinedErrors):
@@ -121,7 +123,7 @@ class RequiredPropNotPresent(BackendDefinedErrors):
         self.message = f'Required Prop: {prop} not present.'  
 
 
-class ExtraPropsInRequestBody(BackendDefinedErrors):
+class RequestBodyPropValidationError(BackendDefinedErrors):
     def __init__(self, prop):
         super().__init__()
         self.error_code = 804
