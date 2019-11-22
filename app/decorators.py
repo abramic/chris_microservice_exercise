@@ -1,6 +1,7 @@
 from functools import wraps
 from flask import make_response, request
 from json import dumps
+from pymongo import errors as mongo_errors
 
 import time
 import errors
@@ -22,15 +23,18 @@ def check_for_integer_params(params: list):
         @wraps(f)
         def decorated(*args, **kwargs):
             try:
-                for param in params:
-                    value = request.args.get(param)
-                    param_as_int = int(value)
-                    if param_as_int != 0:
-                        if float(value) / int(value) != 1.0: raise Exception()
-                        if param_as_int < 0: raise Exception()
-                        if param_as_int < 1 and param == 'limit': raise Exception()                
+                limit = request.args.get('limit', None)
+                offset = request.args.get('offset', None)
+                if limit != None or offset != None:
+                    for param in params:
+                        value = request.args.get(param)
+                        param_as_int = int(value)
+                        if param_as_int != 0:
+                            if float(value) / int(value) != 1.0: raise Exception()
+                            if param_as_int < 0: raise Exception()
+                            if param_as_int < 1 and param == 'limit': raise Exception()                
                 return f(*args, **kwargs)
-            except Exception as e:
+            except Exception:
                 error_response = helpers.format_error_message(errors.ParamMustBeInteger())
                 return make_response(error_response, 400) 
         return decorated
@@ -84,6 +88,22 @@ def check_for_user_id():
                 return make_response(error_response, 400)
             else:
                 return f(*args, **kwargs)
+        return decorated
+    return decorator
+
+
+def handle_mongo_errors():
+    def decorator(f):
+        @wraps(f)
+        def decorated(*args, **kwargs):
+            try:
+                result = f(*args, **kwargs)
+            except Exception as e: 
+                # print('TYPE', type(e).__name__)
+                # if type(e).__name__ == 'InvalidId': 
+                #     raise 
+                # else:
+                    raise errors.DefaultMongoError()
         return decorated
     return decorator
 

@@ -3,10 +3,9 @@ import requests
 import bson
 
 from json import dumps
-from pymongo import MongoClient
+from pymongo import MongoClient, errors as mongo_errors
 from bson.objectid import ObjectId
 from functools import wraps
-
 
 import decorators
 import errors
@@ -26,11 +25,12 @@ class User(Database):
         self.new_user_structure = {
             'user_name': user_name,
             'locations': {},
-            'restaurants': {}
+            'restaurants': []
         }
 
 
     @decorators.print_func_name()
+    # @decorators.handle_mongo_errors()
     def insert_new_user(self):
         response = 'Empty'
         data = self.new_user_structure
@@ -50,6 +50,7 @@ class Restaurants(Database):
 
 
     @decorators.print_func_name()
+    # @decorators.handle_mongo_errors()
     def check_if_at_least_one_restaurant(self, user_id):
         result = self.collection.find_one({
                 '_id': ObjectId(user_id)
@@ -57,7 +58,6 @@ class Restaurants(Database):
                 'restaurants': 1
             }
         )
-        if result is None: raise errors.UserNotPresentInDatabase()
         restaurants = result.get('restaurants', None)
         if len(restaurants) == 0: 
             return False
@@ -67,6 +67,7 @@ class Restaurants(Database):
 
     # TO DO - Expand error handling capabilities on such functions, right now we're just returning if we get that far
     @decorators.print_func_name()
+    # @decorators.handle_mongo_errors()
     def insert_restaurants(self, user_id, restaurants):
             response = self.collection.update({
                 '_id': ObjectId(user_id),
@@ -81,6 +82,7 @@ class Restaurants(Database):
 
 
     @decorators.print_func_name()
+    # @decorators.handle_mongo_errors()
     def retrieve_page_of_restaurants(self, user_id, limit, offset):
         response = self.collection.find({
             '_id': ObjectId(user_id),
@@ -111,7 +113,8 @@ class Locations(Database):
         super().__init__()
               
 
-    @decorators.print_func_name()   
+    @decorators.print_func_name()  
+    # @decorators.handle_mongo_errors()
     def insert_new_location(self, user_id, body):
         record_object_id = ObjectId()
         response = self.collection.update({
@@ -123,13 +126,14 @@ class Locations(Database):
                 }
             }
         )
-        # TO DO: Add additional validation and error handling on response body
         return {
             'id': str(record_object_id)
         }
+            
 
 
-    @decorators.print_func_name()   
+    @decorators.print_func_name()
+    # @decorators.handle_mongo_errors()
     def update_location(self, user_id, location_id, body):
         base_set_path = f"locations.{location_id}"
         set_object = {}
@@ -144,10 +148,12 @@ class Locations(Database):
         )
         return {
             'id': location_id,
-        }           
+        }
 
 
-    @decorators.print_func_name()   
+
+    @decorators.print_func_name() 
+    # @decorators.handle_mongo_errors()
     def retrieve_all_locations(self, user_id):
         result = self.collection.find_one({
                 '_id': ObjectId(user_id)
@@ -155,13 +161,14 @@ class Locations(Database):
                 'locations': 1
             }
         )
-        if result is None: raise errors.UserNotPresentInDatabase()
         locations = result.get('locations', None)
         if locations is None: raise errors.NoLocationsForThisUser()
         return locations
 
 
-    @decorators.print_func_name()   
+
+    @decorators.print_func_name()  
+    # @decorators.handle_mongo_errors()
     def check_if_at_least_one_location(self, user_id):
         # print(os.getenv('MONGO_ATLAS_CONNECTION_STRING'))
         result = self.collection.find_one({
@@ -170,7 +177,6 @@ class Locations(Database):
                 'locations': 1
             }
         )
-        if result is None: raise errors.UserNotPresentInDatabase()
         locations = result.get('locations', None)
         if locations is None or len(locations) == 0: raise errors.NoLocationsForThisUser()
         return locations

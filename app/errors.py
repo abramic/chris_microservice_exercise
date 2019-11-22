@@ -23,6 +23,12 @@ class EndpointMethodNotAllowed(Exception):
 
 # Database Errors
 
+class DefaultMongoError(BackendDefinedErrors):
+    def __init__(self):
+        super().__init__()
+        self.error_code = 600
+        self.message = 'Database Error'
+
 
 class RestaurantGetRequestInsertion(BackendDefinedErrors):
     def __init__(self):

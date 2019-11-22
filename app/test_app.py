@@ -50,8 +50,8 @@ class TestServer(unittest.TestCase):
         id = response_data.get('id')
         self.user_id.append(id)
 
-# Locations
-    def location_handler_errors(self, resp, message, exp_error_code):
+
+    def handler_errors(self, resp, message, exp_error_code):
         self.assertEqual(resp.status, message) 
         rb = loads(resp.data)
         rb_type = type(rb).__name__
@@ -62,6 +62,18 @@ class TestServer(unittest.TestCase):
         self.assertEqual(error_code, exp_error_code)
 
 
+# Test try GETing restuarants for a user when no 
+# location have been entered
+    
+    
+    def test_restaurants_without_locations(self):
+        resp = self.app.get(f'/restaurants?user_id={self.user_id[0]}')
+        self.handler_errors(resp, '400 BAD REQUEST', 606)
+
+
+# Locations
+
+
     def test_location_without_user_id(self):
         payload = {
             "location": "new_york",
@@ -69,9 +81,30 @@ class TestServer(unittest.TestCase):
             "longitude": -73.968285
         }
         resp = self.app.patch(f'/locations', json=payload)
-        self.location_handler_errors(resp, '400 BAD REQUEST', 701)
+        self.handler_errors(resp, '400 BAD REQUEST', 701)
+
+# This should actually be a 605 error
+    def test_location_with_user_id_not_in_db(self):
+        payload = {
+            "location": "new_york",
+            "latitude": 40.785091,
+            "longitude": -73.968285
+        }
+        resp = self.app.patch(f'/locations?user_id=NonexistentUser', json=payload)
+        self.handler_errors(resp, '400 BAD REQUEST', 600)
 
 
+    def test_location_new_incorrect_method(self):
+        # We're hitting with POST, should be hitting with PATCH
+        payload = {
+            "location": "new_york",
+            "latitude": 40.785091,
+            "longitude": -73.968285
+        }
+        resp = self.app.post(f'/locations', json=payload)
+        self.handler_errors(resp, '405 METHOD NOT ALLOWED', 405)
+ 
+ 
     def test_location_new_with_incorrect_structure(self):
         payload = [{
             "location": "new_york",
@@ -79,7 +112,7 @@ class TestServer(unittest.TestCase):
             "longitude": -73.968285
         }]
         resp = self.app.patch(f'/locations?user_id={self.user_id[0]}', json=payload)
-        self.location_handler_errors(resp, '400 BAD REQUEST', 801)
+        self.handler_errors(resp, '400 BAD REQUEST', 801)
 
 
     def test_location_new_with_unallowed_property(self):
@@ -90,7 +123,7 @@ class TestServer(unittest.TestCase):
             "incorrect": "property" 
         }
         resp = self.app.patch(f'/locations?user_id={self.user_id[0]}', json=payload)
-        self.location_handler_errors(resp, '400 BAD REQUEST', 804)
+        self.handler_errors(resp, '400 BAD REQUEST', 804)
 
 
     def test_location_new_with_missing_required_props(self):
@@ -100,7 +133,7 @@ class TestServer(unittest.TestCase):
             "longitude": -73.968285,
         }
         resp = self.app.patch(f'/locations?user_id={self.user_id[0]}', json=payload)
-        self.location_handler_errors(resp, '400 BAD REQUEST', 803) 
+        self.handler_errors(resp, '400 BAD REQUEST', 803) 
 
 
     def test_location_if_prop_is_wrong_type(self):
@@ -110,7 +143,7 @@ class TestServer(unittest.TestCase):
             "longitude": -73.968285,
         }
         resp = self.app.patch(f'/locations?user_id={self.user_id[0]}', json=payload)
-        self.location_handler_errors(resp, '400 BAD REQUEST', 802) 
+        self.handler_errors(resp, '400 BAD REQUEST', 802) 
 
 
     def test_successfully_add_location(self):
@@ -130,6 +163,17 @@ class TestServer(unittest.TestCase):
         self.location_id.append(id)
 
 
+    def test_location_modified_incorrect_method(self):
+        # We're hitting with PUT, should be hitting with PATCH
+        payload = {
+            "location": "new_york_city",
+            "latitude": 40.785091,
+            "longitude": -73.968285
+        }
+        resp = self.app.put(f'/locations', json=payload)
+        self.handler_errors(resp, '405 METHOD NOT ALLOWED', 405)
+
+
     def test_successfully_modify_location(self):
         payload = {
             "location": "new_york_city"
@@ -143,8 +187,33 @@ class TestServer(unittest.TestCase):
             "location": ["new_york_city"]
         }
         resp = self.app.patch(f'/locations?user_id={self.user_id[0]}&location_id={self.location_id[0]}', json=payload)
-        self.location_handler_errors(resp, '400 BAD REQUEST', 802) 
-        
+        self.handler_errors(resp, '400 BAD REQUEST', 802) 
+
+
+# Restaurants
+
+
+    def test_restaurants_method_not_allowed(self):
+        # Should be 'GET'
+        resp = self.app.patch(f'/restaurants')
+        self.handler_errors(resp, '405 METHOD NOT ALLOWED', 405)
+
+
+    def test_restaurants_require_user_id(self):
+        resp = self.app.get(f'/restaurants')
+        self.handler_errors(resp, '400 BAD REQUEST', 701)
+
+    
+  
+
+
+
+
+
+    
+
+
+
 
 
 if __name__ == "__main__":
