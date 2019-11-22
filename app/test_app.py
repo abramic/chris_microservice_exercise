@@ -13,6 +13,9 @@ from json import loads
 # To run this, run the following command (inside the app folder):  
 # python3 -m unittest test_app.py -v
 
+# State managed inside the class has to be declared as a mutable type (a list or dictionary) so that it can be changed if by tests and 
+# referenced by later tests
+
 # The server should start up, and it'll just look like nothing's hitting it.  Let it run for 
 # a time and then stop it with Control+C.  The results of only the non passing tests should
 # show up.  The -v flag means 'verbose' - it'll show you also the tests that pass AND will show you the console,
@@ -27,41 +30,10 @@ from json import loads
 # a byte string, with 'b' affixed to the front of it
 # Class methods get executed in order
 
-# class TestMyApp(unittest.TestCase):
-#     def setUp(self):
-#         self.app = app.test_client()
 
-#     def test_one(self):
-#         rv = self.app.get('/')
-#         assert rv.status == '200 OK'
-
-#     def test_two(self):
-#         rv = self.app.get('/')
-#         # print('RESPONSE DATA IS', rv.data)
-#         # print('LOADS DATA IS', loads(rv.data))
-       
-#         self.assertEqual(loads(rv.data), {"prop": "Hello World!"})
-
-#     # def test_three(self):
-#     #     rv = self.app.get('/')
-#     #     self.assertEqual(loads(rv.data), {"prop": "Hello Globe!"})
-
-#     def test_four(self):
-#         rv = self.app.get('/locations?user_id=5dd46e6ec2dddbebad4078b6')
-#         body = loads(rv.data)
-#         print('THE BODY IS: ', body)
-#         self.assertEqual(rv.status, '404 OK')
-
-# class ShouldNotWork(unittest.TestCase):
-#     def setUp(self):
-#         self.app = app.test_client()
-
-
-# class RequiredValues():
-#     def __init__(self):
-#         self.user_id
 
 class TestServer(unittest.TestCase):
+    # These have to be a mutable type so that the respective test functions can mutate them as need be
     user_id = []
 
     def setUp(self):
