@@ -31,7 +31,6 @@ def check_for_integer_params(params: list):
                         if param_as_int < 1 and param == 'limit': raise Exception()                
                 return f(*args, **kwargs)
             except Exception as e:
-                print(e)
                 error_response = helpers.format_error_message(errors.ParamMustBeInteger())
                 return make_response(error_response, 400) 
         return decorated

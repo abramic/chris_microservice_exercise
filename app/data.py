@@ -115,6 +115,7 @@ def add_location(user_id, body):
 
 
 @decorators.print_func_name()
+@decorators.basic_validate_against_model_locations(location_structure, False)
 def update_location(user_id, location_id, body):
     db = orm.Locations()
     response = db.update_location(user_id, location_id, body)
