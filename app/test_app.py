@@ -35,6 +35,7 @@ from json import loads
 class TestServer(unittest.TestCase):
     # These have to be a mutable type so that the respective test functions can mutate them as need be
     user_id = []
+    location_id = []
 
     def setUp(self):
         self.app = app.test_client()
@@ -94,7 +95,7 @@ class TestServer(unittest.TestCase):
 
     def test_location_new_with_missing_required_props(self):
         payload = {
-            # "location": "new_york",
+            # "location": "new_york", location is a required field
             "latitude": 40.785091,
             "longitude": -73.968285,
         }
@@ -105,11 +106,46 @@ class TestServer(unittest.TestCase):
     def test_location_if_prop_is_wrong_type(self):
         payload = {
             "location": "new_york",
-            "latitude": [40.785091],
+            "latitude": [40.785091], #should not be a list
             "longitude": -73.968285,
         }
         resp = self.app.patch(f'/locations?user_id={self.user_id[0]}', json=payload)
         self.location_handler_errors(resp, '400 BAD REQUEST', 802) 
+
+
+    def test_successfully_add_location(self):
+        payload = {
+            "location": "new_york",
+            "latitude": 40.785091,
+            "longitude": -73.968285
+        }
+        resp = self.app.patch(f'/locations?user_id={self.user_id[0]}', json=payload)
+        self.assertEqual(resp.status, '201 CREATED') 
+        rb = loads(resp.data)
+        rb_type = type(rb).__name__
+        self.assertNotEqual(rb, None)
+        self.assertEqual(rb_type, 'dict')
+        id = rb.get('id', None)
+        self.assertNotEqual(id, None)
+        self.location_id.append(id)
+
+
+    def test_successfully_modify_location(self):
+        payload = {
+            "location": "new_york_city"
+        }
+        resp = self.app.patch(f'/locations?user_id={self.user_id[0]}&location_id={self.location_id[0]}', json=payload)
+        self.assertEqual(resp.status, '204 NO CONTENT')
+  
+
+    def test_unsuccessfully_modify_location(self):
+        payload = {
+            "location": ["new_york_city"]
+        }
+        resp = self.app.patch(f'/locations?user_id={self.user_id[0]}&location_id={self.location_id[0]}', json=payload)
+        self.location_handler_errors(resp, '400 BAD REQUEST', 802) 
+        
+
 
 if __name__ == "__main__":
     unittest.main()
@@ -118,11 +154,3 @@ if __name__ == "__main__":
 
    
    
-    # def test_successfully_add_location(self):
-    #     payload = {
-    #         "location": "new_york",
-    #         "latitude": 40.785091,
-    #         "longitude": -73.968285
-    #     }
-    #     rv = self.app.patch(f'/locations?user_id={self.user_id[0]}', json=payload)
-    #     assert rv.status == '201 CREATED'

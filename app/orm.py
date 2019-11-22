@@ -123,7 +123,6 @@ class Locations(Database):
                 }
             }
         )
-        print(response)
         # TO DO: Add additional validation and error handling on response body
         return {
             'id': str(record_object_id)
@@ -172,9 +171,7 @@ class Locations(Database):
             }
         )
         if result is None: raise errors.UserNotPresentInDatabase()
-        print(result)
         locations = result.get('locations', None)
-        print(locations)
         if locations is None or len(locations) == 0: raise errors.NoLocationsForThisUser()
         return locations
 
