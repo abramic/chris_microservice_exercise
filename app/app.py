@@ -64,7 +64,7 @@ def add_user():
     user_name = request.args.get('user_name')
     response = data.add_new_user(user_name)
     print(response)
-    return make_response(response, 200)
+    return make_response(response, 201)
 
 
 # app.run(port=int('5001'), debug=True)
