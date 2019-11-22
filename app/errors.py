@@ -124,7 +124,7 @@ class RequiredPropNotPresent(BackendDefinedErrors):
 class ExtraPropsInRequestBody(BackendDefinedErrors):
     def __init__(self, prop):
         super().__init__()
-        self.error_code = 803
+        self.error_code = 804
         self.message = f'Extra Prop {prop} present in request body.'  
 
 
