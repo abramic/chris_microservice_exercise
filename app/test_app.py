@@ -31,7 +31,6 @@ from json import loads
 # Class methods get executed in order
 
 
-
 class TestServer(unittest.TestCase):
     # These have to be a mutable type so that the respective test functions can mutate them as need be
     user_id = []
@@ -84,6 +83,7 @@ class TestServer(unittest.TestCase):
         self.handler_errors(resp, '400 BAD REQUEST', 701)
 
 # This should actually be a 605 error
+
     def test_location_with_user_id_not_in_db(self):
         payload = {
             "location": "new_york",
@@ -91,7 +91,7 @@ class TestServer(unittest.TestCase):
             "longitude": -73.968285
         }
         resp = self.app.patch(f'/locations?user_id=NonexistentUser', json=payload)
-        self.handler_errors(resp, '400 BAD REQUEST', 600)
+        self.handler_errors(resp, '400 BAD REQUEST', 605)
 
 
     def test_location_new_incorrect_method(self):

@@ -136,5 +136,20 @@ class RequestBodyPropValidationError(BackendDefinedErrors):
         self.message = f'Extra Prop {prop} present in request body.'  
 
 
+class YelpDefinedErrors(Exception):
+     def __init__(self):   
+        self.error_code = None
+        self.message = 'Default Yelp Error Response'
+        self.yelp_error_status = None
+        self.yelp_error_content = {}
+
+class YelpValidationError(YelpDefinedErrors):
+    def __init__(self, error_status, error_content):
+        super().__init__()
+        self.error_code = 901
+        self.message = 'yelp_validation_error'
+        self.yelp_error_status = error_status
+        self.yelp_error_content = error_content
+
 class YelpConcurrencyError():
     pass

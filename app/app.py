@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 
 import decorators
 import data
-import orm
 
 load_dotenv()
 app = Flask("chris_server")

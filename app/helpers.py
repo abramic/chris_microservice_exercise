@@ -17,5 +17,14 @@ def format_error_message(error):
     }
 
 
+def format_yelp_error_message(error):
+    return {
+        'error_code': error.error_code,
+        'message': error.message,
+        'yelp_error_status': error.yelp_error_status,
+        'yelp_error_content': error.yelp_error_content
+    }
+
+
 def validate_location_name(body):
     pass

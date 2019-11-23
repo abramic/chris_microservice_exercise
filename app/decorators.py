@@ -53,6 +53,7 @@ def check_for_limit_too_large():
         return decorated
     return decorator
 
+
 def allowed_methods(allowed_methods):
     def decorator(f):
         @wraps(f)
@@ -97,15 +98,27 @@ def handle_mongo_errors():
         @wraps(f)
         def decorated(*args, **kwargs):
             try:
-                result = f(*args, **kwargs)
+                return f(*args, **kwargs)
             except Exception as e: 
-                # print('TYPE', type(e).__name__)
-                # if type(e).__name__ == 'InvalidId': 
-                #     raise 
-                # else:
+                print('TYPE', type(e).__name__)
+                if type(e).__name__ == 'InvalidId': 
+                    raise errors.UserNotPresentInDatabase()
+                else:
                     raise errors.DefaultMongoError()
         return decorated
     return decorator
+
+
+def handle_yelp_errors():
+    def decorator(f):
+        @wraps(f)
+        def decorated(*args, **kwargs):
+            try:
+                return f(*args, **kwargs) 
+            except Exception as e:
+                pass
+        return decorated
+    return decorator            
 
 
 def handle_errors():

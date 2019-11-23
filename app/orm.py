@@ -30,7 +30,7 @@ class User(Database):
 
 
     @decorators.print_func_name()
-    # @decorators.handle_mongo_errors()
+    @decorators.handle_mongo_errors()
     def insert_new_user(self):
         response = 'Empty'
         data = self.new_user_structure
@@ -67,7 +67,7 @@ class Restaurants(Database):
 
     # TO DO - Expand error handling capabilities on such functions, right now we're just returning if we get that far
     @decorators.print_func_name()
-    # @decorators.handle_mongo_errors()
+    @decorators.handle_mongo_errors()
     def insert_restaurants(self, user_id, restaurants):
             response = self.collection.update({
                 '_id': ObjectId(user_id),
@@ -82,7 +82,7 @@ class Restaurants(Database):
 
 
     @decorators.print_func_name()
-    # @decorators.handle_mongo_errors()
+    @decorators.handle_mongo_errors()
     def retrieve_page_of_restaurants(self, user_id, limit, offset):
         response = self.collection.find({
             '_id': ObjectId(user_id),
@@ -114,7 +114,7 @@ class Locations(Database):
               
 
     @decorators.print_func_name()  
-    # @decorators.handle_mongo_errors()
+    @decorators.handle_mongo_errors()
     def insert_new_location(self, user_id, body):
         record_object_id = ObjectId()
         response = self.collection.update({
@@ -133,7 +133,7 @@ class Locations(Database):
 
 
     @decorators.print_func_name()
-    # @decorators.handle_mongo_errors()
+    @decorators.handle_mongo_errors()
     def update_location(self, user_id, location_id, body):
         base_set_path = f"locations.{location_id}"
         set_object = {}
@@ -153,7 +153,7 @@ class Locations(Database):
 
 
     @decorators.print_func_name() 
-    # @decorators.handle_mongo_errors()
+    @decorators.handle_mongo_errors()
     def retrieve_all_locations(self, user_id):
         result = self.collection.find_one({
                 '_id': ObjectId(user_id)
@@ -168,7 +168,7 @@ class Locations(Database):
 
 
     @decorators.print_func_name()  
-    # @decorators.handle_mongo_errors()
+    @decorators.handle_mongo_errors()
     def check_if_at_least_one_location(self, user_id):
         # print(os.getenv('MONGO_ATLAS_CONNECTION_STRING'))
         result = self.collection.find_one({
